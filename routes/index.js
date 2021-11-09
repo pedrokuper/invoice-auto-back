@@ -3,7 +3,7 @@ const router = express.Router();
 const cors = require("cors");
 
 const vendors = [
-  "Seleccioná un proveedor",//!Esto siempre tiene que ser el primero, es para 
+  "Seleccioná un proveedor", //!Esto siempre tiene que ser el primero, es para que el front tenga un defaultValue en el select de vendors.
   "Telecom",
   "Movistar",
   "Telecentro",
