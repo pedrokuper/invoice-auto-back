@@ -3,7 +3,8 @@ const router = express.Router();
 const cors = require("cors");
 
 const vendors = [
-  "Telecom/Fibertel",
+  "Seleccioná un proveedor",//!Esto siempre tiene que ser el primero, es para 
+  "Telecom",
   "Movistar",
   "Telecentro",
   "Sociedad Cooperativa Popular",
@@ -12,6 +13,11 @@ const vendors = [
 /* GET home page. */
 router.get("/api/vendors", function (req, res, next) {
   res.json(vendors).status(200);
+});
+
+router.post("/api/invoice", function (req, res, next) {
+  console.log(req.body);
+  res.send("oka").status(200);
 });
 
 module.exports = router;
