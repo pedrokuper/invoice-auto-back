@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const cors = require("cors");
 const multer = require("multer");
-// const upload = multer({ dest: "./uploads" });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -27,7 +26,8 @@ router.get("/api/vendors", function (req, res, next) {
   res.json(vendors).status(200);
 });
 
-router.post("/api/invoice", upload.single("pdf"), (req, res) => {
+router.post("/api/invoice", upload.single("file"), (req, res) => {
+  console.log(req.body);
   console.log(req.file);
   res.send("oka").status(200);
 });
