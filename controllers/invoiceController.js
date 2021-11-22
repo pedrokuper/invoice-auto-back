@@ -5,32 +5,41 @@ const fs = require("fs");
 
 class InvoiceController {
   parsePDF(req, res) {
-    const bufferData = new Uint8Array(Buffer.from(req.file.buffer));
-    const { data } = req.body;
-    const reqData = JSON.parse(data);
-    PDF(bufferData)
-      .then(function (data) {
-        const _data = regexMatcher(data, reqData.vendor);
-        console.log(_data);
-        XlsxPopulate.fromFileAsync("./rendicion.xlsx").then((workbook) => {
-          // Modify the workbook.
-          //DRY
-          workbook.sheet("Detalle_Gastos").cell("A8").value(_data.invoiceDate);
-          workbook
-            .sheet("Detalle_Gastos")
-            .cell("B8")
-            .value(_data.invoiceNumber);
-          workbook
-            .sheet("Detalle_Gastos")
-            .cell("E8")
-            .value(_data.invoicePayment);
-          workbook.sheet("Detalle_Gastos").cell("C8").value(reqData.vendor);
-          return workbook.toFileAsync("./out.xlsx");
+    const bodyData = JSON.parse(req.body.data);
+
+    if (req.file.buffer && bodyData.vendor && bodyData.email) {
+      try {
+        const bufferData = new Uint8Array(Buffer.from(req.file.buffer));
+
+        PDF(bufferData).then((data) => {
+          const _data = regexMatcher(data, bodyData.vendor);
+          console.log(_data);
+          XlsxPopulate.fromFileAsync("./rendicion.xlsx").then((workbook) => {
+            // Modify the workbook.
+            //DRY
+            workbook
+              .sheet("Detalle_Gastos")
+              .cell("A8")
+              .value(_data.invoiceDate);
+            workbook
+              .sheet("Detalle_Gastos")
+              .cell("B8")
+              .value(_data.invoiceNumber);
+            workbook
+              .sheet("Detalle_Gastos")
+              .cell("E8")
+              .value(_data.invoicePayment);
+            workbook.sheet("Detalle_Gastos").cell("C8").value(bodyData.vendor);
+            return workbook.toFileAsync("./out.xlsx");
+          });
+          res.sendStatus(200);
         });
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+      } catch (error) {
+        res.sendStatus(500);
+      }
+    } else {
+      res.sendStatus(400);
+    }
   }
 }
 
